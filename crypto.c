@@ -12,18 +12,21 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include "crypto.h"
+#include <string.h>
 
 void Encrypt(void);
 void Decrypt(void);
 int getSize(char* s);
-
+extern int errno;
 
 void Encrypt(void){
     
     char key;; 
     int size = 0;
     int i = 0;
+    int errnum;
     FILE* file = NULL;
     char* inFile = NULL;
     char* outFile = NULL;
@@ -36,7 +39,7 @@ void Encrypt(void){
         scanf(" %c", &key);
         //key = getchar();
         getchar();
-        printf("%c is the key.......", key);
+        //printf("%c is the key.......", key);
         if (key < 'a' || key > 'z'){ //Might be uppercase
             if(key < 'A' || key > 'Z'){
                 printf("Sorry that is an invalid key...try again.\n");
@@ -49,20 +52,34 @@ void Encrypt(void){
             break;
         }
     }
-    printf("\nThe key you've entered is: %c\n", key);
+    //printf("\nThe key you've entered is: %c\n", key);
     key = key - 'A';
     //while((getchar()) != '\n');
-    printf("Please enter the file you'd like to encrypt: ");
+    while(true){
+        //while((getchar()) != '\n');
+        printf("Please enter the file you'd like to encrypt: ");
 
-    inFile = malloc(25);
-    scanf("%24s", inFile);
-    printf("The file you've selected is: %s\n", inFile);
-    pText = malloc(255);
-    file = fopen(inFile, "r");
-    fscanf(file, "%s", pText);
-    printf("%s Is the contents of the file...\n", pText);
-    fclose(file);
+        inFile = malloc(25);
+        scanf("%24s", inFile);
+        //printf("The file you've selected is: %s\n", inFile);
+        pText = malloc(255);
     
+        file = fopen(inFile, "r");
+        if(file == NULL){
+            errnum = errno;
+            //fprintf(stderr, "Value of error: %d\n", errno);
+            //perror("Error printed by perror");
+            fprintf(stderr, "Error opening file: %s\n", strerror(errnum));
+            while((getchar()) != '\n');
+            continue;
+        }
+        else{
+            fscanf(file, "%s", pText);
+            printf("%s Is the contents of the file...\n", pText);
+            fclose(file);
+            break;
+        }
+    }
     size = getSize(pText);
     eText = malloc(size);
 
@@ -96,12 +113,12 @@ void Decrypt(void){
     char* eText = NULL;
     char* dText = NULL;
      while(1){
-        printf("Please enter an encryption key: ");
+        printf("Please enter a decryption key: ");
         //while((getchar()) != '\n');
         scanf(" %c", &key);
         //key = getchar();
         getchar();
-        printf("%c is the key.......", key);
+        //printf("%c is the key.......", key);
         if (key < 'a' || key > 'z'){ //Might be uppercase
             if(key < 'A' || key > 'Z'){
                 printf("Sorry that is an invalid key...try again.\n");
@@ -114,7 +131,7 @@ void Decrypt(void){
             break;
         }
     }
-    printf("\nThe key you've entered is: %c\n", key);
+    //printf("\nThe key you've entered is: %c\n", key);
     key = key - 'A';
 
     printf("Please enter the file you'd like to decrypt: ");
@@ -125,7 +142,7 @@ void Decrypt(void){
     eText = malloc(255);
     file = fopen(inFile, "r");
     fscanf(file, "%s", eText);
-    printf("%s Is the contents of the encrypted file...\n", eText);
+    //printf("%s Is the contents of the encrypted file...\n", eText);
     fclose(file);
     
     size = getSize(eText);
