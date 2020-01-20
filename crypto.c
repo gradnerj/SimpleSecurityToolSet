@@ -32,6 +32,12 @@ void Encrypt(void){
     char* outFile = NULL;
     char* pText = NULL;
     char* eText = NULL;
+    
+
+
+    char *line = NULL;
+    size_t len = 0;
+    size_t read;
 
     while(1){
         printf("Please enter an encryption key: ");
@@ -86,11 +92,16 @@ void Encrypt(void){
             if( !pText ) fclose(file),fputs("memory alloc fails",stderr),exit(1);
 
             /* copy the file into the buffer */
-            if( 1!=fread( pText , size, 1 , file) ){
-                fclose(file),free(pText),fputs("entire read fails",stderr),exit(1);
+            //if( 1!=fread( pText , size, 1 , file) ){
+             //   fclose(file),free(pText),fputs("entire read fails",stderr),exit(1);
+            //}
+            while((read = getline(&line, &len, file)) != -1){
+                printf("%s", line);
+                strcat(pText, line);
+                
             }
-            pText[strcspn(pText, "\n")] = 0;
-            printf("%s is the contents of the file...", pText);
+            //pText[strcspn(pText, "\n")] = 0;
+            //printf("%s is the contents of the file...", pText);
             fclose(file);
             //free(pText);
             break;
@@ -99,21 +110,33 @@ void Encrypt(void){
     //size = getSize(pText);
    // eText = malloc(size);
 
-    printf("\nSize of pText = %d\n", size);
-    printf("pText value = %s\n", pText);
-    
+    //printf("\nSize of pText = %d\n", size);
+   // printf("pText value = %s\n", pText);
+
+    //Convert plain text to UPPERCASE
+    for (i = 0; pText[i]!='\0'; i++) {
+      if(pText[i] >= 'a' && pText[i] <= 'z') {
+         pText[i] = pText[i] -32;
+      }
+    }
+
     for(i = 0; i < (size-1); i++){
-        eText[i] = pText[i] + key;
-        if(eText[i] > 90){
-            eText[i] -= 26;
+        if(pText[i] >= 'A' && pText[i] <= 'Z'){
+            eText[i] = pText[i] + key;
+            if(eText[i] > 90){
+                eText[i] -= 26;
+            }
+        } 
+        else {
+            eText[i] = pText[i];
         }
     }
     
-    printf("eText value = %s\n", eText);
+    //printf("eText value = %s\n", eText);
     printf("Please enter an output file name: ");
     outFile = malloc(25);
     scanf("%24s", outFile);
-    printf("The file you've selected is: %s\n", outFile);
+   // printf("The file you've selected is: %s\n", outFile);
     file = fopen(outFile, "w");
     fprintf(file, "%s", eText);
     fclose(file);
@@ -134,6 +157,10 @@ void Decrypt(void){
     char* outFile = NULL;
     char* eText = NULL;
     char* dText = NULL;
+
+    char* line = NULL;
+    size_t len = 0;
+    size_t read;
      while(1){
         printf("Please enter a decryption key: ");
         //while((getchar()) != '\n');
@@ -182,12 +209,17 @@ void Decrypt(void){
             if( !eText ) fclose(file),fputs("memory alloc fails",stderr),exit(1);
 
             /* copy the file into the buffer */
-            if( 1!=fread( eText , size, 1 , file) ){
-                fclose(file),free(eText),fputs("entire read fails",stderr),exit(1);
+            //if( 1!=fread( eText , size, 1 , file) ){
+             //   fclose(file),free(eText),fputs("entire read fails",stderr),exit(1);
+            //}
+            while((read = getline(&line, &len, file)) != -1){
+                printf("%s", line);
+                strcat(eText, line);
             }
-        eText[strcspn(eText, "\n")] = 0;
+
+       // eText[strcspn(eText, "\n")] = 0;
        //fscanf(file, "%s", eText);
-        printf("%s Is the contents of the encrypted file...\n", eText);
+        //printf("%s Is the contents of the encrypted file...\n", eText);
         fclose(file);
         //free(eText);
         break;
@@ -195,11 +227,20 @@ void Decrypt(void){
     }
     //size = getSize(eText);
     //dText = malloc(size);
-
+     for (i = 0; eText[i]!='\0'; i++) {
+      if(eText[i] >= 'a' && eText[i] <= 'z') {
+         eText[i] = eText[i] -32;
+      }
+   }
     for(i = 0; i < (size); i++){
-        dText[i] = eText[i] - key;
-        if(dText[i] < 65){
-            dText[i] += 26;
+        if(eText[i] >= 'A' && eText[i] <= 'Z'){
+            dText[i] = eText[i] - key;
+            if(dText[i] < 65){
+                dText[i] += 26;
+            }
+        }
+        else{
+            dText[i] = eText[i];
         }
     }
 
