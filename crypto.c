@@ -46,18 +46,23 @@ void Encrypt(void){
         //key = getchar();
         getchar();
         //printf("%c is the key.......", key);
-        if (key < 'a' || key > 'z'){ //Might be uppercase
-            if(key < 'A' || key > 'Z'){
-                printf("Sorry that is an invalid key...try again.\n");
-                continue;
-            }else{
-                break;
-            }
-        }
-        else{
+        if (key  >= 'a' && key <= 'z'){ //Might be uppercase
+            key = key - 32;
             break;
         }
-    }
+        if(key >= 'A' && key <= 'Z'){
+            break;
+               // printf("Sorry that is an invalid key...try again.\n");
+                //continue;
+        }else{
+               printf("Sorry that is an invalid key...try again.\n");
+               continue;
+            }
+        }
+    
+       
+        
+    
     //printf("\nThe key you've entered is: %c\n", key);
     key = key - 'A';
     //while((getchar()) != '\n');
@@ -96,7 +101,7 @@ void Encrypt(void){
              //   fclose(file),free(pText),fputs("entire read fails",stderr),exit(1);
             //}
             while((read = getline(&line, &len, file)) != -1){
-                printf("%s", line);
+               // printf("%s", line);
                 strcat(pText, line);
                 
             }
@@ -168,18 +173,20 @@ void Decrypt(void){
         //key = getchar();
         getchar();
         //printf("%c is the key.......", key);
-        if (key < 'a' || key > 'z'){ //Might be uppercase
-            if(key < 'A' || key > 'Z'){
-                printf("Sorry that is an invalid key...try again.\n");
-                continue;
-            }else{
-                break;
-            }
-        }
-        else{
+         if (key  >= 'a' && key <= 'z'){ //Might be uppercase
+            key = key - 32;
             break;
         }
-    }
+        if(key >= 'A' && key <= 'Z'){
+            break;
+               // printf("Sorry that is an invalid key...try again.\n");
+                //continue;
+        }else{
+               printf("Sorry that is an invalid key...try again.\n");
+               continue;
+            }
+
+     }
     //printf("\nThe key you've entered is: %c\n", key);
     key = key - 'A';
     while(true){
@@ -213,7 +220,7 @@ void Decrypt(void){
              //   fclose(file),free(eText),fputs("entire read fails",stderr),exit(1);
             //}
             while((read = getline(&line, &len, file)) != -1){
-                printf("%s", line);
+                //printf("%s", line);
                 strcat(eText, line);
             }
 
