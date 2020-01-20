@@ -62,7 +62,7 @@ void Encrypt(void){
         inFile = malloc(25);
         scanf("%24s", inFile);
         //printf("The file you've selected is: %s\n", inFile);
-        pText = malloc(255);
+        
     
         file = fopen(inFile, "r");
         if(file == NULL){
@@ -74,22 +74,42 @@ void Encrypt(void){
             continue;
         }
         else{
-            fscanf(file, "%s", pText);
-            printf("%s Is the contents of the file...\n", pText);
+            //Seek the position of END from file <file> with 0L (0) byte offset from position
+            fseek(file, 0L, SEEK_END);
+            //ftell returns position of file pointer with respect to starting position file
+            size = ftell(file);
+            //sets file position to beginning of file
+            rewind(file);
+
+            pText = malloc(size);
+            eText = malloc(size);
+            if( !pText ) fclose(file),fputs("memory alloc fails",stderr),exit(1);
+
+            /* copy the file into the buffer */
+            if( 1!=fread( pText , size, 1 , file) ){
+                fclose(file),free(pText),fputs("entire read fails",stderr),exit(1);
+            }
+            pText[strcspn(pText, "\n")] = 0;
+            printf("%s is the contents of the file...", pText);
             fclose(file);
+            //free(pText);
             break;
         }
     }
-    size = getSize(pText);
-    eText = malloc(size);
+    //size = getSize(pText);
+   // eText = malloc(size);
 
-    for(i = 0; i < size; i++){
+    printf("\nSize of pText = %d\n", size);
+    printf("pText value = %s\n", pText);
+    
+    for(i = 0; i < (size-1); i++){
         eText[i] = pText[i] + key;
         if(eText[i] > 90){
             eText[i] -= 26;
         }
     }
-     
+    
+    printf("eText value = %s\n", eText);
     printf("Please enter an output file name: ");
     outFile = malloc(25);
     scanf("%24s", outFile);
@@ -97,6 +117,7 @@ void Encrypt(void){
     file = fopen(outFile, "w");
     fprintf(file, "%s", eText);
     fclose(file);
+    //free(eText);
    // while((getchar()) != '\n');
     getchar();
 
@@ -107,6 +128,7 @@ void Decrypt(void){
     char key;; 
     int size = 0;
     int i = 0;
+    int errnum;
     FILE* file = NULL;
     char* inFile = NULL;
     char* outFile = NULL;
@@ -133,22 +155,48 @@ void Decrypt(void){
     }
     //printf("\nThe key you've entered is: %c\n", key);
     key = key - 'A';
+    while(true){
+        printf("Please enter the file you'd like to decrypt: ");
 
-    printf("Please enter the file you'd like to decrypt: ");
+        inFile = malloc(25);
+        scanf("%24s", inFile);
+        printf("The file you've selected is: %s\n", inFile);
+        eText = malloc(255);
+        file = fopen(inFile, "r");
+        if(file == NULL){
+            errnum = errno;
+            fprintf(stderr, "Error opening file: %s\n", strerror(errnum));
+            while((getchar()) != '\n');
+            continue;
+        }
+        else{
+            //Seek the position of END from file <file> with 0L (0) byte offset from position
+            fseek(file, 0L, SEEK_END);
+            //ftell returns position of file pointer with respect to starting position file
+            size = ftell(file);
+            //sets file position to beginning of file
+            rewind(file);
 
-    inFile = malloc(25);
-    scanf("%24s", inFile);
-    printf("The file you've selected is: %s\n", inFile);
-    eText = malloc(255);
-    file = fopen(inFile, "r");
-    fscanf(file, "%s", eText);
-    //printf("%s Is the contents of the encrypted file...\n", eText);
-    fclose(file);
-    
-    size = getSize(eText);
-    dText = malloc(size);
+            eText = malloc(size);
+            dText = malloc(size);
+            if( !eText ) fclose(file),fputs("memory alloc fails",stderr),exit(1);
 
-    for(i = 0; i < size; i++){
+            /* copy the file into the buffer */
+            if( 1!=fread( eText , size, 1 , file) ){
+                fclose(file),free(eText),fputs("entire read fails",stderr),exit(1);
+            }
+        eText[strcspn(eText, "\n")] = 0;
+       //fscanf(file, "%s", eText);
+        printf("%s Is the contents of the encrypted file...\n", eText);
+        fclose(file);
+        //free(eText);
+        break;
+        }
+    }
+    //size = getSize(eText);
+    //dText = malloc(size);
+
+    for(i = 0; i < (size); i++){
         dText[i] = eText[i] - key;
         if(dText[i] < 65){
             dText[i] += 26;
@@ -162,6 +210,7 @@ void Decrypt(void){
     file = fopen(outFile, "w");
     fprintf(file, "%s", dText);
     fclose(file);
+    free(dText);
    // while((getchar()) != '\n');
     getchar();
 
