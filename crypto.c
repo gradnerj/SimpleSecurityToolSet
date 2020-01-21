@@ -26,7 +26,7 @@ void Encrypt(void){
     char key;
     int size = 0;
     int i = 0;
-    int errnum;
+    int errnum = 0;
     FILE* file = NULL;
     char* inFile = NULL;
     char* outFile = NULL;
@@ -37,7 +37,7 @@ void Encrypt(void){
 
     char *line = NULL;
     size_t len = 0;
-    size_t read;
+    size_t read = 0;
 
     while(1){
         printf("Please enter an encryption key (1 letter will be used): ");
@@ -107,6 +107,8 @@ void Encrypt(void){
             }
             //pText[strcspn(pText, "\n")] = 0;
             //printf("%s is the contents of the file...", pText);
+            //fclose(file);
+            remove(inFile);
             fclose(file);
             //free(pText);
             break;
@@ -148,8 +150,12 @@ void Encrypt(void){
     //free(eText);
    // while((getchar()) != '\n');
     getchar();
-
-
+    free(inFile);
+    free(eText);
+    free(pText);
+    free(outFile);
+    //free(file);
+    free(line);
     }
 
 void Decrypt(void){
@@ -195,7 +201,7 @@ void Decrypt(void){
         inFile = malloc(25);
         scanf("%24s", inFile);
         printf("The file you've selected is: %s\n", inFile);
-        eText = malloc(255);
+        //eText = malloc(255);
         file = fopen(inFile, "r");
         if(file == NULL){
             errnum = errno;
@@ -258,11 +264,16 @@ void Decrypt(void){
     file = fopen(outFile, "w");
     fprintf(file, "%s", dText);
     fclose(file);
-    free(dText);
+    
    // while((getchar()) != '\n');
     getchar();
-
-
+    free(dText);
+    free(eText);
+    free(inFile);
+    free(outFile);
+    //free(file);
+    free(line);
+    
 }
 
 void CryptoMenu(void){
@@ -300,4 +311,5 @@ int getSize(char* s){
     char* t;
     for(t = s; *t != '\0'; t++);
     return t - s;
+    
 }
