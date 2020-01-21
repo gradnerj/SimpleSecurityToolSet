@@ -24,7 +24,7 @@ extern int errno;
 void Encrypt(void){
     
     char key;
-    int size = 0;
+    long size = 0;
     int i = 0;
     int errnum = 0;
     FILE* file = NULL;
@@ -37,7 +37,7 @@ void Encrypt(void){
 
     char *line = NULL;
     size_t len = 0;
-    size_t read = 0;
+    size_t read;
 
     while(1){
         printf("Please enter an encryption key (1 letter will be used): ");
@@ -127,7 +127,7 @@ void Encrypt(void){
       }
     }
 
-    for(i = 0; i < (size-1); i++){
+    for(i = 0; i < (size -1); i++){
         if(pText[i] >= 'A' && pText[i] <= 'Z'){
             eText[i] = pText[i] + key;
             if(eText[i] > 90){
@@ -156,11 +156,12 @@ void Encrypt(void){
     free(outFile);
     //free(file);
     free(line);
+    exit(0);
     }
 
 void Decrypt(void){
-    char key;; 
-    int size = 0;
+    char key; 
+    long size = 0;
     int i = 0;
     int errnum;
     FILE* file = NULL;
@@ -200,7 +201,7 @@ void Decrypt(void){
 
         inFile = malloc(25);
         scanf("%24s", inFile);
-        printf("The file you've selected is: %s\n", inFile);
+        //printf("The file you've selected is: %s\n", inFile);
         //eText = malloc(255);
         file = fopen(inFile, "r");
         if(file == NULL){
@@ -217,8 +218,8 @@ void Decrypt(void){
             //sets file position to beginning of file
             rewind(file);
 
-            eText = malloc(size);
-            dText = malloc(size);
+            eText = malloc(size+1);
+            dText = malloc(size+1);
             if( !eText ) fclose(file),fputs("memory alloc fails",stderr),exit(1);
 
             /* copy the file into the buffer */
@@ -260,7 +261,7 @@ void Decrypt(void){
     printf("Please enter an output file name: ");
     outFile = malloc(25);
     scanf("%24s", outFile);
-    printf("The file you've selected is: %s\n", outFile);
+    //printf("The file you've selected is: %s\n", outFile);
     file = fopen(outFile, "w");
     fprintf(file, "%s", dText);
     fclose(file);
@@ -273,7 +274,7 @@ void Decrypt(void){
     free(outFile);
     //free(file);
     free(line);
-    
+    exit(0);    
 }
 
 void CryptoMenu(void){
