@@ -23,7 +23,7 @@ extern int errno;
 
 void Encrypt(void){
     
-    char key;; 
+    char key;
     int size = 0;
     int i = 0;
     int errnum;
@@ -40,11 +40,11 @@ void Encrypt(void){
     size_t read;
 
     while(1){
-        printf("Please enter an encryption key: ");
+        printf("Please enter an encryption key (1 letter will be used): ");
         //while((getchar()) != '\n');
         scanf(" %c", &key);
         //key = getchar();
-        getchar();
+        while((getchar()) != '\n');
         //printf("%c is the key.......", key);
         if (key  >= 'a' && key <= 'z'){ //Might be uppercase
             key = key - 32;
@@ -167,11 +167,11 @@ void Decrypt(void){
     size_t len = 0;
     size_t read;
      while(1){
-        printf("Please enter a decryption key: ");
+        printf("Please enter a decryption key (1 letter will be used): ");
         //while((getchar()) != '\n');
         scanf(" %c", &key);
         //key = getchar();
-        getchar();
+        while((getchar()) != '\n');
         //printf("%c is the key.......", key);
          if (key  >= 'a' && key <= 'z'){ //Might be uppercase
             key = key - 32;
